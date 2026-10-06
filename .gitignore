@@ -1,0 +1,25 @@
+# Database
+db.sqlite3
+
+# Zip files
+*.zip
+
+# Ngrok
+ngrok*
+ngrok-v3*
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual Env
+venv/
+env/
+.venv/
+
+# Django
+*.log
+media/
+staticfiles/
