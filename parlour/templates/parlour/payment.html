@@ -1,0 +1,839 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Balance Bite | Payment</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #fff8e8;
+            color: #333;
+        }
+
+        .navbar {
+            background: #ffffff;
+            padding: 18px 8%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+
+        .logo {
+            font-size: 26px;
+            font-weight: bold;
+            color: #7b4b2a;
+        }
+
+        .back {
+            text-decoration: none;
+            color: #7b4b2a;
+            font-weight: bold;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1100px;
+            margin: 40px auto;
+        }
+
+        .heading {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .heading h1 {
+            color: #7b4b2a;
+            font-size: 32px;
+        }
+
+        .heading p {
+            margin-top: 8px;
+            color: #777;
+        }
+
+        .payment-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 25px;
+        }
+
+        .card {
+            background: white;
+            padding: 28px;
+            border-radius: 18px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+
+        .card h2 {
+            color: #7b4b2a;
+            margin-bottom: 22px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            margin-bottom: 18px;
+            outline: none;
+            font-size: 15px;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #c58b62;
+        }
+
+        .payment-option {
+            border: 1px solid #ddd;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .payment-option:hover {
+            border-color: #b9784f;
+            background: #fffaf5;
+        }
+
+        .payment-option input {
+            width: auto;
+            margin: 0 10px 0 0;
+        }
+
+        .payment-title {
+            font-weight: bold;
+        }
+
+        .payment-details {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #fff8f2;
+            border-radius: 12px;
+        }
+
+        .payment-details.active {
+            display: block;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 15px 0;
+        }
+
+        .summary-item span:first-child {
+            color: #666;
+        }
+
+        .line {
+            border-top: 1px solid #ddd;
+            margin: 20px 0;
+        }
+
+        .total {
+            display: flex;
+            justify-content: space-between;
+            font-size: 21px;
+            font-weight: bold;
+            color: #7b4b2a;
+        }
+
+        .place-btn {
+            width: 100%;
+            border: none;
+            background: #7b4b2a;
+            color: white;
+            padding: 15px;
+            border-radius: 12px;
+            font-size: 17px;
+            font-weight: bold;
+            margin-top: 25px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .place-btn:hover {
+            background: #5f371f;
+        }
+
+        .success-card {
+            display: none;
+            background: white;
+            max-width: 550px;
+            margin: 60px auto;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+        }
+
+        .success-icon {
+            width: 75px;
+            height: 75px;
+            background: #e8f7e8;
+            color: #2e8b57;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            margin: 0 auto 20px;
+        }
+
+        .success-card h2 {
+            color: #2e8b57;
+            margin-bottom: 10px;
+        }
+
+        .success-card p {
+            color: #666;
+            margin: 8px 0;
+        }
+
+        .home-btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 13px 25px;
+            background: #7b4b2a;
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+        }
+
+        @media(max-width: 800px) {
+            .payment-wrapper {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <div class="navbar">
+
+        <div class="logo">
+            BALANCE BITE
+        </div>
+
+        <a href="/" class="back">
+            ← Back to Shop
+        </a>
+
+    </div>
+
+
+    <!-- PAYMENT SECTION -->
+    <div class="container" id="paymentContainer">
+
+        <div class="heading">
+            <h1>Complete Your Payment</h1>
+            <p>Enjoy your Balance Bite favourites 🍨</p>
+        </div>
+
+
+        <div class="payment-wrapper">
+
+            <!-- LEFT SIDE -->
+            <div class="card">
+
+                <h2>Payment Details</h2>
+
+                <form id="paymentForm">
+
+                    <!-- NAME -->
+                    <label for="name">
+                        Full Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="name"
+                        placeholder="Enter your name"
+                        required
+                    >
+
+
+                    <!-- PHONE -->
+                    <label for="phone">
+                        Phone Number
+                    </label>
+
+                    <input
+                        type="tel"
+                        id="phone"
+                        placeholder="Enter phone number"
+                        maxlength="10"
+                        required
+                    >
+
+
+                    <h2 style="margin-top:10px;">
+                        Select Payment Method
+                    </h2>
+
+
+                    <!-- UPI -->
+                    <div class="payment-option">
+
+                        <label style="margin:0; cursor:pointer;">
+
+                            <input
+                                type="radio"
+                                name="payment"
+                                value="upi"
+                                onchange="showPayment('upi')"
+                            >
+
+                            <span class="payment-title">
+                                UPI Payment
+                            </span>
+
+                        </label>
+
+
+                        <div
+                            id="upi"
+                            class="payment-details"
+                        >
+
+                            <label>
+                                UPI ID
+                            </label>
+
+                            <input
+                                type="text"
+                                id="upiId"
+                                placeholder="example@upi"
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- CARD -->
+                    <div class="payment-option">
+
+                        <label style="margin:0; cursor:pointer;">
+
+                            <input
+                                type="radio"
+                                name="payment"
+                                value="card"
+                                onchange="showPayment('card')"
+                            >
+
+                            <span class="payment-title">
+                                Credit / Debit Card
+                            </span>
+
+                        </label>
+
+
+                        <div
+                            id="card"
+                            class="payment-details"
+                        >
+
+                            <label>
+                                Card Number
+                            </label>
+
+                            <input
+                                type="text"
+                                id="cardNumber"
+                                placeholder="1234 5678 9012 3456"
+                                maxlength="19"
+                            >
+
+
+                            <label>
+                                Expiry Date
+                            </label>
+
+                            <input
+                                type="text"
+                                id="expiry"
+                                placeholder="MM/YY"
+                                maxlength="5"
+                            >
+
+
+                            <label>
+                                CVV
+                            </label>
+
+                            <input
+                                type="password"
+                                id="cvv"
+                                placeholder="123"
+                                maxlength="3"
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- NET BANKING -->
+                    <div class="payment-option">
+
+                        <label style="margin:0; cursor:pointer;">
+
+                            <input
+                                type="radio"
+                                name="payment"
+                                value="netbanking"
+                                onchange="showPayment('netbanking')"
+                            >
+
+                            <span class="payment-title">
+                                Net Banking
+                            </span>
+
+                        </label>
+
+
+                        <div
+                            id="netbanking"
+                            class="payment-details"
+                        >
+
+                            <label>
+                                Select Bank
+                            </label>
+
+                            <select id="bank">
+
+                                <option value="">
+                                    Select your bank
+                                </option>
+
+                                <option>
+                                    State Bank of India
+                                </option>
+
+                                <option>
+                                    HDFC Bank
+                                </option>
+
+                                <option>
+                                    ICICI Bank
+                                </option>
+
+                                <option>
+                                    Axis Bank
+                                </option>
+
+                                <option>
+                                    Bank of Maharashtra
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        class="place-btn"
+                    >
+                        Place Order
+                    </button>
+
+                </form>
+
+            </div>
+
+
+            <!-- RIGHT SIDE -->
+            <div class="card">
+
+                <h2>Order Summary</h2>
+
+                <div class="summary-item">
+
+                    <span>
+                        Vanilla Dream × 1
+                    </span>
+
+                    <span>
+                        ₹120
+                    </span>
+
+                </div>
+
+
+                <div class="summary-item">
+
+                    <span>
+                        Strawberry Bliss × 1
+                    </span>
+
+                    <span>
+                        ₹140
+                    </span>
+
+                </div>
+
+
+                <div class="line"></div>
+
+
+                <div class="summary-item">
+
+                    <span>
+                        Subtotal
+                    </span>
+
+                    <span>
+                        ₹260
+                    </span>
+
+                </div>
+
+
+                <div class="summary-item">
+
+                    <span>
+                        Tax
+                    </span>
+
+                    <span>
+                        ₹40
+                    </span>
+
+                </div>
+
+
+                <div class="line"></div>
+
+
+                <div class="total">
+
+                    <span>
+                        Total
+                    </span>
+
+                    <span>
+                        ₹300
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- SUCCESS CARD -->
+    <div
+        class="success-card"
+        id="successCard"
+    >
+
+        <div class="success-icon">
+            ✓
+        </div>
+
+        <h2>
+            Order Successfully Placed!
+        </h2>
+
+        <p>
+            Thank you for ordering from Balance Bite 🍨
+        </p>
+
+        <p>
+            Your order has been confirmed.
+        </p>
+
+        <br>
+
+        <p>
+            <strong>Order ID:</strong>
+            <span id="orderId"></span>
+        </p>
+
+        <p>
+            <strong>Payment:</strong>
+            <span id="paymentMethod"></span>
+        </p>
+
+        <p>
+            <strong>Total:</strong>
+            ₹300
+        </p>
+
+        <a
+            href="/"
+            class="home-btn"
+        >
+            Continue Shopping
+        </a>
+
+    </div>
+
+
+    <script>
+
+        // SHOW PAYMENT DETAILS
+        function showPayment(type) {
+
+            document
+                .querySelectorAll(".payment-details")
+                .forEach(function(section) {
+
+                    section.classList.remove("active");
+
+                });
+
+
+            document
+                .getElementById(type)
+                .classList.add("active");
+
+        }
+
+
+        // PLACE ORDER
+        document
+            .getElementById("paymentForm")
+            .addEventListener("submit", function(event) {
+
+                event.preventDefault();
+
+
+                const name =
+                    document.getElementById("name").value.trim();
+
+                const phone =
+                    document.getElementById("phone").value.trim();
+
+
+                const selectedPayment =
+                    document.querySelector(
+                        'input[name="payment"]:checked'
+                    );
+
+
+                // NAME CHECK
+                if (name === "") {
+
+                    alert("Please enter your name.");
+
+                    return;
+
+                }
+
+
+                // PHONE CHECK
+                if (!/^[0-9]{10}$/.test(phone)) {
+
+                    alert("Please enter a valid 10-digit phone number.");
+
+                    return;
+
+                }
+
+
+                // PAYMENT CHECK
+                if (!selectedPayment) {
+
+                    alert("Please select a payment method.");
+
+                    return;
+
+                }
+
+
+                // UPI VALIDATION
+                if (selectedPayment.value === "upi") {
+
+                    const upi =
+                        document.getElementById("upiId").value.trim();
+
+                    if (upi === "") {
+
+                        alert("Please enter your UPI ID.");
+
+                        return;
+
+                    }
+
+                }
+
+
+                // CARD VALIDATION
+                if (selectedPayment.value === "card") {
+
+                    const card =
+                        document.getElementById("cardNumber").value.trim();
+
+                    const expiry =
+                        document.getElementById("expiry").value.trim();
+
+                    const cvv =
+                        document.getElementById("cvv").value.trim();
+
+
+                    if (
+                        card === "" ||
+                        expiry === "" ||
+                        cvv === ""
+                    ) {
+
+                        alert("Please enter complete card details.");
+
+                        return;
+
+                    }
+
+                }
+
+
+                // NET BANKING VALIDATION
+                if (selectedPayment.value === "netbanking") {
+
+                    const bank =
+                        document.getElementById("bank").value;
+
+                    if (bank === "") {
+
+                        alert("Please select your bank.");
+
+                        return;
+
+                    }
+
+                }
+
+
+                // GENERATE ORDER ID
+                const orderId =
+                    "BB" +
+                    Date.now().toString().slice(-8);
+
+
+                // PAYMENT NAME
+                let paymentName = "";
+
+
+                if (selectedPayment.value === "upi") {
+
+                    paymentName = "UPI Payment";
+
+                }
+
+                else if (selectedPayment.value === "card") {
+
+                    paymentName = "Credit / Debit Card";
+
+                }
+
+                else {
+
+                    paymentName = "Net Banking";
+
+                }
+
+
+                // SHOW SUCCESS CARD
+                document.getElementById("orderId").innerText =
+                    orderId;
+
+                document.getElementById("paymentMethod").innerText =
+                    paymentName;
+
+
+                document.getElementById("paymentContainer")
+                    .style.display = "none";
+
+
+                document.getElementById("successCard")
+                    .style.display = "block";
+
+
+                window.scrollTo({
+                    top: 0,
+                    behavior: "smooth"
+                });
+
+            });
+
+
+        // CARD NUMBER FORMAT
+        document
+            .getElementById("cardNumber")
+            .addEventListener("input", function() {
+
+                let value =
+                    this.value.replace(/\D/g, "");
+
+                value =
+                    value.substring(0, 16);
+
+                let formatted =
+                    value.match(/.{1,4}/g);
+
+                this.value =
+                    formatted ? formatted.join(" ") : "";
+
+            });
+
+
+        // EXPIRY FORMAT
+        document
+            .getElementById("expiry")
+            .addEventListener("input", function() {
+
+                let value =
+                    this.value.replace(/\D/g, "");
+
+                if (value.length >= 3) {
+
+                    value =
+                        value.substring(0, 2) +
+                        "/" +
+                        value.substring(2, 4);
+
+                }
+
+                this.value = value;
+
+            });
+
+
+    </script>
+
+</body>
+</html>
